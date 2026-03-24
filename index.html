@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Solicitações — Reserva Beach Club</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --brand:#2A7CC7;--brand-d:#1A5A9A;--brand-l:#EBF4FF;
+  --bg:#F0F6FD;--surf:#fff;
+  --text:#0D1B2A;--t2:#4A5568;--t3:#9AAABB;
+  --border:#C8DDEF;--border2:#A8C8E8;
+  --green:#1A6B35;--gbg:#E6F4EC;
+  --red:#A32D2D;--rbg:#FDEAEA;
+  --r:9px;--rl:14px;--rxl:20px;
+}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);font-size:14px;min-height:100vh}
+
+/* LOGIN */
+#login{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;background:linear-gradient(150deg,var(--brand-d),var(--brand) 60%,#4A9AD4)}
+.lcard{background:#fff;border-radius:var(--rxl);padding:36px 32px;width:100%;max-width:400px;box-shadow:0 8px 32px rgba(0,0,0,.12)}
+.llogo{text-align:center;margin-bottom:28px}
+.lico{width:54px;height:54px;border-radius:14px;background:var(--brand);display:inline-flex;align-items:center;justify-content:center;margin-bottom:12px}
+.lico svg{width:26px;height:26px;stroke:#fff;fill:none;stroke-width:2}
+.ltitle{font-size:21px;font-weight:700;color:var(--text)}
+.lsub{font-size:12px;color:var(--t3);margin-top:3px}
+.lfg{margin-bottom:14px}
+.lfg label{display:block;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.05em;color:var(--t2);margin-bottom:5px}
+.lfg input,.lfg select{width:100%;padding:11px 13px;font-size:13px;border:1.5px solid var(--border2);border-radius:var(--r);background:var(--bg);color:var(--text);font-family:inherit;transition:border-color .15s}
+.lfg input:focus,.lfg select:focus{outline:none;border-color:var(--brand);background:#fff}
+.lerr{font-size:11px;color:var(--red);margin-top:4px;display:none}
+.lbtn{width:100%;background:var(--brand);color:#fff;border:none;padding:12px;border-radius:var(--r);font-size:14px;font-weight:600;cursor:pointer;margin-top:6px;font-family:inherit}
+.lbtn:hover{opacity:.9}
+.lhint{text-align:center;font-size:11px;color:var(--t3);margin-top:10px}
+.lfooter{margin-top:18px;font-size:11px;color:rgba(255,255,255,.5)}
+
+/* APP */
+#app{display:none;flex-direction:column;min-height:100vh}
+.hdr{background:linear-gradient(135deg,var(--brand-d),var(--brand));padding:14px 24px;display:flex;align-items:center;justify-content:space-between}
+.hdr-left{display:flex;align-items:center;gap:10px}
+.hdr-ico{width:36px;height:36px;border-radius:9px;background:rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center}
+.hdr-ico svg{width:19px;height:19px;stroke:#fff;fill:none;stroke-width:2}
+.hdr-name{font-size:15px;font-weight:700;color:#fff}
+.hdr-sub{font-size:11px;color:rgba(255,255,255,.65);margin-top:1px}
+.hdr-user{display:flex;align-items:center;gap:8px}
+.hdr-av{width:28px;height:28px;border-radius:50%;background:rgba(255,255,255,.2);color:#fff;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center}
+.hdr-nm{font-size:12px;color:rgba(255,255,255,.85);font-weight:500}
+.btn-sair{background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.3);color:#fff;padding:4px 10px;border-radius:var(--r);font-size:11px;cursor:pointer;font-family:inherit}
+
+.main{max-width:680px;margin:0 auto;padding:22px 18px}
+
+/* SUCCESS */
+#success{display:none;text-align:center;padding:48px 24px}
+.ok-ico{width:64px;height:64px;border-radius:50%;background:var(--gbg);display:flex;align-items:center;justify-content:center;margin:0 auto 14px}
+.ok-ico svg{width:32px;height:32px;stroke:var(--green);fill:none;stroke-width:2.5}
+.ok-title{font-size:20px;font-weight:700;color:var(--green);margin-bottom:6px}
+.ok-sub{font-size:13px;color:var(--t2);margin-bottom:18px;line-height:1.6}
+.ok-card{background:#fff;border:1px solid var(--border);border-radius:var(--rl);padding:14px 18px;text-align:left;margin-bottom:18px;display:inline-block}
+.ok-id{font-size:24px;font-weight:700;color:var(--brand);font-family:monospace}
+.ok-label{font-size:11px;color:var(--t3);margin-bottom:3px}
+.btn-new{background:var(--brand);color:#fff;border:none;padding:11px 26px;border-radius:var(--r);font-size:14px;font-weight:600;cursor:pointer;font-family:inherit}
+
+/* TIPO */
+.tipo-sel{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:18px}
+.tipo-btn{padding:16px;border:2px solid var(--border);border-radius:var(--rl);background:#fff;cursor:pointer;text-align:center;transition:all .15s;font-family:inherit}
+.tipo-btn:hover{border-color:var(--brand);background:var(--brand-l)}
+.tipo-btn.on{border-color:var(--brand);background:var(--brand-l)}
+.tipo-ico{font-size:28px;margin-bottom:7px}
+.tipo-title{font-size:14px;font-weight:600;color:var(--text)}
+.tipo-sub{font-size:11px;color:var(--t3);margin-top:2px}
+
+/* CARD */
+.card{background:#fff;border:1px solid var(--border);border-radius:var(--rl);padding:18px 20px;margin-bottom:12px}
+.card-title{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--t3);margin-bottom:12px;padding-bottom:7px;border-bottom:1px solid var(--border)}
+.fr{display:grid;grid-template-columns:1fr 1fr;gap:11px}
+.fr.full{grid-template-columns:1fr}
+.fg{margin-bottom:10px}
+.fg:last-child{margin-bottom:0}
+.fg label{display:block;font-size:11px;font-weight:600;color:var(--t2);margin-bottom:4px}
+.rq{color:var(--brand)}
+.fi,.fsl,.ftx{width:100%;padding:8px 11px;font-size:13px;border:1.5px solid var(--border2);border-radius:var(--r);background:#fff;color:var(--text);font-family:inherit;transition:border-color .15s}
+.fi:focus,.fsl:focus,.ftx:focus{outline:none;border-color:var(--brand)}
+.ftx{resize:vertical;min-height:80px}
+.vinfo{border-radius:var(--r);padding:8px 11px;margin-top:5px;font-size:12px;line-height:1.5;display:none}
+.vi-ok{background:var(--brand-l);border:1px solid var(--border2);color:var(--brand-d)}
+.vi-emerg{background:var(--rbg);border:1px solid #F7C1C1;color:var(--red)}
+.info-pill{background:var(--brand-l);border:1px solid var(--border2);border-radius:var(--r);padding:9px 13px;font-size:12px;color:var(--brand-d);margin-bottom:12px}
+
+/* SUBMIT */
+.btn-submit{width:100%;background:var(--brand);color:#fff;border:none;padding:13px;border-radius:var(--r);font-size:15px;font-weight:700;cursor:pointer;font-family:inherit;display:flex;align-items:center;justify-content:center;gap:8px;margin-top:4px}
+.btn-submit:hover{opacity:.9}
+.btn-submit:disabled{opacity:.6;cursor:not-allowed}
+.btn-submit svg{width:17px;height:17px;stroke:#fff;fill:none;stroke-width:2.5}
+.spinner{display:inline-block;width:17px;height:17px;border:2px solid rgba(255,255,255,.4);border-top-color:#fff;border-radius:50%;animation:sp .6s linear infinite}
+@keyframes sp{to{transform:rotate(360deg)}}
+.toast{position:fixed;bottom:16px;right:16px;background:#1B2D3E;color:#fff;padding:10px 15px;border-radius:var(--r);font-size:13px;z-index:999;opacity:0;transition:opacity .25s;pointer-events:none}
+.toast.on{opacity:1}
+.toast.er{background:var(--red)}
+#pix-wrap{display:none}
+@media(max-width:500px){.fr{grid-template-columns:1fr}.tipo-sel{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="login">
+  <div class="lcard">
+    <div class="llogo">
+      <div class="lico"><svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg></div>
+      <div class="ltitle">Reserva Beach Club</div>
+      <div class="lsub">Portal de Solicitações — Compras e Reembolsos</div>
+    </div>
+    <div class="lfg">
+      <label>E-mail corporativo</label>
+      <input type="email" id="l-email" placeholder="seunome@reservaclub.com.br">
+      <div class="lerr" id="l-err"></div>
+    </div>
+    <div class="lfg">
+      <label>Departamento</label>
+      <select id="l-depto">
+        <option value="">Selecione seu departamento...</option>
+        <option>Comercial</option><option>Financeiro</option><option>Administrativo</option>
+        <option>Operacional</option><option>Marketing</option><option>Jurídico</option>
+        <option>RH</option><option>Eventos</option><option>Obra</option>
+      </select>
+    </div>
+    <button class="lbtn" id="l-btn">Entrar</button>
+    <div class="lhint">Use seu e-mail <strong>@reservaclub.com.br</strong></div>
+  </div>
+  <div class="lfooter">FinanceFlow · Reserva Beach Club · Uso interno</div>
+</div>
+
+<!-- APP -->
+<div id="app">
+  <header class="hdr">
+    <div class="hdr-left">
+      <div class="hdr-ico"><svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg></div>
+      <div>
+        <div class="hdr-name">Reserva Beach Club</div>
+        <div class="hdr-sub">Portal de Solicitações</div>
+      </div>
+    </div>
+    <div class="hdr-user">
+      <div class="hdr-av" id="h-av">?</div>
+      <div class="hdr-nm" id="h-nm">—</div>
+      <button class="btn-sair" id="h-sair">Sair</button>
+    </div>
+  </header>
+
+  <div class="main">
+    <!-- SUCESSO -->
+    <div id="success">
+      <div class="ok-ico"><svg viewBox="0 0 24 24"><polyline points="20,6 9,17 4,12"/></svg></div>
+      <div class="ok-title">Solicitação enviada!</div>
+      <div class="ok-sub">Sua solicitação foi registrada com sucesso.<br>O responsável já foi notificado por e-mail.</div>
+      <div class="ok-card">
+        <div class="ok-label">Número da solicitação</div>
+        <div class="ok-id" id="ok-id">#000</div>
+      </div>
+      <br>
+      <button class="btn-new" onclick="resetForm()">Fazer nova solicitação</button>
+    </div>
+
+    <!-- FORM -->
+    <div id="form-area">
+      <div class="tipo-sel">
+        <button class="tipo-btn" id="btn-compra" onclick="setTipo('compra')">
+          <div class="tipo-ico">🛒</div>
+          <div class="tipo-title">Compra</div>
+          <div class="tipo-sub">Solicitar compra de produto ou serviço</div>
+        </button>
+        <button class="tipo-btn" id="btn-reembolso" onclick="setTipo('reembolso')">
+          <div class="tipo-ico">💰</div>
+          <div class="tipo-title">Reembolso</div>
+          <div class="tipo-sub">Solicitar reembolso de gasto realizado</div>
+        </button>
+      </div>
+
+      <div class="info-pill">📅 Pagamentos processados toda <strong> segunda e quinta-feira</strong> após aprovação da diretoria.</div>
+
+      <div class="card">
+        <div class="card-title">Dados da solicitação</div>
+        <div class="fr full">
+          <div class="fg"><label>Beneficiário / Fornecedor <span class="rq">*</span></label>
+            <input class="fi" id="f-ben" type="text" placeholder="Nome completo ou razão social">
+          </div>
+        </div>
+        <div class="fr">
+          <div class="fg"><label>Valor estimado <span class="rq">*</span></label>
+            <input class="fi" id="f-valor" type="text" placeholder="R$ 0,00">
+          </div>
+          <div class="fg">
+            <label>Data de vencimento <span class="rq">*</span></label>
+            <input class="fi" id="f-venc" type="date">
+            <div class="vinfo" id="vinfo"></div>
+          </div>
+        </div>
+        <div class="fr full">
+          <div class="fg"><label>Descrição / justificativa <span class="rq">*</span></label>
+            <textarea class="ftx" id="f-obs" placeholder="Descreva o que precisa ser comprado, motivo, detalhes..."></textarea>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Dados para pagamento</div>
+        <div class="fr">
+          <div class="fg"><label>Banco</label><input class="fi" id="f-banco" type="text" placeholder="Ex: Itaú, Nubank"></div>
+          <div class="fg"><label>Conta</label><input class="fi" id="f-conta" type="text" placeholder="00000-0"></div>
+        </div>
+        <div class="fr">
+          <div class="fg"><label>Agência</label><input class="fi" id="f-ag" type="text" placeholder="0000"></div>
+          <div class="fg"><label>CPF / CNPJ</label><input class="fi" id="f-cpf" type="text" placeholder="000.000.000-00"></div>
+        </div>
+        <div class="fr">
+          <div class="fg"><label>Tipo de chave PIX <span class="rq">*</span></label>
+            <select class="fsl" id="f-pix-tipo">
+              <option value="">Selecione...</option>
+              <option>CPF/CNPJ</option><option>E-mail</option>
+              <option>Telefone</option><option>Chave aleatória</option>
+            </select>
+          </div>
+          <div class="fg" id="pix-wrap">
+            <label>Chave PIX <span class="rq">*</span></label>
+            <input class="fi" id="f-pix" type="text" placeholder="Chave PIX">
+          </div>
+        </div>
+      </div>
+
+      <button class="btn-submit" id="btn-sub">
+        <svg viewBox="0 0 24 24"><path d="M22 2L11 13"/><polygon points="22,2 15,22 11,13 2,9"/></svg>
+        Enviar solicitação
+      </button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+var API='https://script.google.com/macros/s/AKfycbwg7HCM9UqW0HKwhi72dqa9KzjgZXwAJjsIyarD-x9ZhEv7CV0-1Gc0DQpuMz2ZIow3Yg/exec';
+var U=null, tipo='', _n=0;
+
+// JSONP
+function jp(url){
+  return new Promise(function(res,rej){
+    var cb='_c'+(++_n)+'_'+Date.now(), s=document.createElement('script');
+    window[cb]=function(d){delete window[cb];document.body.removeChild(s);res(d);};
+    s.onerror=function(){delete window[cb];document.body.removeChild(s);rej(new Error('erro'));};
+    s.src=url+(url.indexOf('?')>=0?'&':'?')+'callback='+cb;
+    document.body.appendChild(s);
+  });
+}
+
+// LOGIN
+function doLogin(){
+  var em=document.getElementById('l-email').value.trim().toLowerCase();
+  var dp=document.getElementById('l-depto').value;
+  var err=document.getElementById('l-err');
+  if(!em||!em.includes('@')){err.textContent='Digite um e-mail válido';err.style.display='block';return;}
+  if(!em.endsWith('@reservaclub.com.br')){err.textContent='Use seu e-mail @reservaclub.com.br';err.style.display='block';return;}
+  err.style.display='none';
+  if(!dp){toast('Selecione seu departamento','er');return;}
+  var pts=em.split('@')[0].split('.');
+  var nome=pts.map(function(p){return p.charAt(0).toUpperCase()+p.slice(1);}).join(' ');
+  var ini=(pts[0][0]+(pts[1]?pts[1][0]:pts[0][1]||'')).toUpperCase();
+  U={nome:nome,email:em,depto:dp,ini:ini};
+  localStorage.setItem('rbc_u',JSON.stringify(U));
+  document.getElementById('login').style.display='none';
+  var app=document.getElementById('app');app.style.display='flex';app.style.flexDirection='column';
+  document.getElementById('h-av').textContent=ini;
+  document.getElementById('h-nm').textContent=pts[0].charAt(0).toUpperCase()+pts[0].slice(1)+' · '+dp;
+}
+
+document.getElementById('l-btn').onclick=doLogin;
+document.getElementById('l-email').onkeydown=function(e){if(e.key==='Enter')doLogin();};
+document.getElementById('l-depto').onkeydown=function(e){if(e.key==='Enter')doLogin();};
+
+document.getElementById('h-sair').onclick=function(){
+  U=null;localStorage.removeItem('rbc_u');
+  document.getElementById('app').style.display='none';
+  document.getElementById('login').style.display='flex';
+  document.getElementById('l-email').value='';
+  document.getElementById('l-depto').value='';
+  document.getElementById('l-err').style.display='none';
+};
+
+// TIPO
+function setTipo(t){
+  tipo=t;
+  document.getElementById('btn-compra').classList.toggle('on',t==='compra');
+  document.getElementById('btn-reembolso').classList.toggle('on',t==='reembolso');
+}
+
+// VENCIMENTO
+document.getElementById('f-venc').onchange=function(){
+  if(!this.value)return;
+  var D=['Domingo','Segunda-feira','Terça-feira','Quarta-feira','Quinta-feira','Sexta-feira','Sábado'];
+  var d=new Date(this.value+'T12:00:00'),i=0;
+  while(d.getDay()!==1&&d.getDay()!==4&&i<10){d.setDate(d.getDate()+1);i++;}
+  var prox=D[d.getDay()]+', '+String(d.getDate()).padStart(2,'0')+'/'+String(d.getMonth()+1).padStart(2,'0')+'/'+d.getFullYear();
+  var diff=Math.ceil((new Date(this.value+'T12:00:00')-new Date())/(1000*60*60*24));
+  var el=document.getElementById('vinfo');
+  el.style.display='block';
+  if(diff<=5){
+    el.className='vinfo vi-emerg';
+    el.innerHTML='<strong>⚠️ Emergencial!</strong> Vencimento em '+diff+' dia(s). Será marcado como emergencial.';
+    var o=document.getElementById('f-obs');
+    if(!o.value.includes('EMERGENCIAL'))o.value=(o.value?o.value+'\n\n':'')+'⚠️ PAGAMENTO EMERGENCIAL — vencimento em '+diff+' dia(s).';
+  }else{
+    el.className='vinfo vi-ok';
+    el.innerHTML='<strong>📅 Próximo pagamento:</strong> '+prox;
+  }
+};
+
+// VALOR
+document.getElementById('f-valor').oninput=function(){
+  var v=this.value.replace(/\D/g,'');
+  if(!v){this.value='';return;}
+  v=(parseInt(v)/100).toFixed(2);
+  this.value='R$ '+v.replace('.',',').replace(/\B(?=(\d{3})+(?!\d))/g,'.');
+};
+
+// PIX
+document.getElementById('f-pix-tipo').onchange=function(){
+  document.getElementById('pix-wrap').style.display=this.value?'block':'none';
+};
+
+// SUBMIT
+document.getElementById('btn-sub').onclick=async function(){
+  if(!tipo){toast('Selecione Compra ou Reembolso','er');return;}
+  var ben=gv('f-ben'),val=gv('f-valor'),venc=gv('f-venc'),obs=gv('f-obs'),pt=gv('f-pix-tipo'),px=gv('f-pix');
+  if(!ben){toast('Informe o beneficiário','er');return;}
+  if(!val){toast('Informe o valor','er');return;}
+  if(!venc){toast('Informe a data de vencimento','er');return;}
+  if(!obs){toast('Descreva a solicitação','er');return;}
+  if(!pt){toast('Selecione o tipo de chave PIX','er');return;}
+  if(!px){toast('Informe a chave PIX','er');return;}
+  var rv=parseFloat(val.replace(/[R$\s.]/g,'').replace(',','.'))||0;
+  var diff=Math.ceil((new Date(venc+'T12:00:00')-new Date())/(1000*60*60*24));
+  var data={tipo:tipo,sol:U.nome,se:U.email,depto:U.depto,ben:ben,valor:rv,venc:venc,obs:obs,
+    banco:gv('f-banco'),ag:gv('f-ag'),conta:gv('f-conta'),cpf:gv('f-cpf'),
+    pixTipo:pt,pix:px,emergencial:String(diff<=5),status:'pending',
+    data:new Date().toLocaleDateString('pt-BR')};
+  var btn=this;
+  btn.disabled=true;btn.innerHTML='<span class="spinner"></span> Enviando...';
+  try{
+    var j=await jp(API+'?payload='+encodeURIComponent(JSON.stringify({action:'create',data:data})));
+    if(j&&j.ok){
+      document.getElementById('ok-id').textContent='#'+j.id;
+      document.getElementById('form-area').style.display='none';
+      document.getElementById('success').style.display='block';
+      window.scrollTo(0,0);
+    }else{
+      toast('Erro ao enviar. Tente novamente.','er');
+      btn.disabled=false;btn.innerHTML='<svg viewBox="0 0 24 24"><path d="M22 2L11 13"/><polygon points="22,2 15,22 11,13 2,9"/></svg> Enviar solicitação';
+    }
+  }catch(e){
+    toast('Sem conexão. Verifique a internet.','er');
+    btn.disabled=false;btn.innerHTML='<svg viewBox="0 0 24 24"><path d="M22 2L11 13"/><polygon points="22,2 15,22 11,13 2,9"/></svg> Enviar solicitação';
+  }
+};
+
+function resetForm(){
+  document.getElementById('success').style.display='none';
+  document.getElementById('form-area').style.display='block';
+  ['f-ben','f-valor','f-venc','f-obs','f-banco','f-ag','f-conta','f-cpf','f-pix-tipo','f-pix'].forEach(function(id){var e=document.getElementById(id);if(e)e.value='';});
+  document.getElementById('vinfo').style.display='none';
+  document.getElementById('pix-wrap').style.display='none';
+  tipo='';
+  document.getElementById('btn-compra').classList.remove('on');
+  document.getElementById('btn-reembolso').classList.remove('on');
+  var btn=document.getElementById('btn-sub');
+  btn.disabled=false;btn.innerHTML='<svg viewBox="0 0 24 24"><path d="M22 2L11 13"/><polygon points="22,2 15,22 11,13 2,9"/></svg> Enviar solicitação';
+  window.scrollTo(0,0);
+}
+
+function gv(id){var e=document.getElementById(id);return e?e.value.trim():'';}
+function toast(m,t){var e=document.getElementById('toast');e.textContent=m;e.className='toast '+(t||'');e.classList.add('on');setTimeout(function(){e.classList.remove('on');},3000);}
+
+// RESTORE
+(function(){
+  try{
+    var s=localStorage.getItem('rbc_u');if(!s)return;
+    var u=JSON.parse(s);
+    if(u&&u.email&&u.depto){
+      U=u;
+      document.getElementById('login').style.display='none';
+      var app=document.getElementById('app');app.style.display='flex';app.style.flexDirection='column';
+      document.getElementById('h-av').textContent=u.ini||'??';
+      document.getElementById('h-nm').textContent=u.nome.split(' ')[0]+' · '+u.depto;
+    }
+  }catch(e){localStorage.removeItem('rbc_u');}
+})();
+</script>
+</body>
+</html>
